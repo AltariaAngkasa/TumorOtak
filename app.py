@@ -1,19 +1,20 @@
-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
+from PIL import Image
 import numpy as np
+import joblib
 import cv2
 from skimage.feature import graycomatrix, graycoprops
-from sklearn.ensemble import RandomForestClassifier
-import joblib
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Load or re-train model (this example assumes model is trained within the script)
+# Muat model
+model = joblib.load('modelNEW.pkl')
+
+# Ekstraksi fitur GLCM
 def extract_glcm_features(image_path):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     image = cv2.resize(image, (128, 128))
@@ -24,37 +25,38 @@ def extract_glcm_features(image_path):
     homogeneity = graycoprops(glcm, 'homogeneity')[0, 0]
     return [contrast, correlation, energy, homogeneity]
 
-# Dummy training for demo (in production, load from file)
-def train_dummy_model():
-    # This simulates training from data
-    X = np.random.rand(100, 4)
-    y = np.random.randint(2, size=100)
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X, y)
-    return model
-
-# model = train_dummy_model()
-
-model = joblib.load('modelNEW.pkl')
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    result = None
-    if request.method == 'POST':
-        if 'image' not in request.files:
-            return "No file part"
-        file = request.files['image']
-        if file.filename == '':
-            return "No selected file"
-        if file:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+    return render_template('index.html')
 
-            features = extract_glcm_features(filepath)
-            prediction = model.predict([features])[0]
-            result = "TUMOR" if prediction == 1 else "TIDAK TUMOR"
-    return render_template('index.html', result=result)
+@app.route('/predict', methods=['POST'])
+def predict():
+    print(">>> MENERIMA POST KE /predict <<<")
+    if 'image' not in request.files:
+        print(">>> Tidak ada 'image' dalam request.files <<<")
+        return redirect(url_for('index'))
+
+    file = request.files['image']
+    print(">>> File diterima:", file.filename)
+    if file.filename == '':
+        print(">>> Nama file kosong <<<")
+        return redirect(url_for('index'))
+
+    if file:
+        print(">>> File valid, lanjut proses GLCM dan prediksi <<<")
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # Ekstrak fitur dari gambar
+        features = extract_glcm_features(filepath)
+        prediction = model.predict([features])[0]
+
+        result = "Tumor Terdeteksi" if prediction == 1 else "Tidak Ada Tumor"
+        image_url = url_for('static', filename=f'uploads/{filename}')
+        return render_template('index.html', result=result, image_url=image_url)
+
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
