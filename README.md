@@ -1,4 +1,7 @@
 # 🧠 Klasifikasi Tumor Otak Berbasis Web
+![image](https://github.com/user-attachments/assets/5c52952c-0a03-476f-acd3-0ef0d22474aa)
+
+
 
 Aplikasi web sederhana berbasis Flask untuk memprediksi apakah citra MRI otak menunjukkan adanya **tumor atau tidak** menggunakan **ekstraksi fitur GLCM (Gray-Level Co-occurrence Matrix)** dan model Machine Learning (Random Forest).
 
