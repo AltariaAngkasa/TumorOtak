@@ -1,0 +1,17 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>Prediksi Tumor Otak</title>
+</head>
+<body>
+    <h1>Upload Gambar MRI Otak</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*">
+        <input type="submit" value="Prediksi">
+    </form>
+    {% if result %}
+        <h2>Hasil Prediksi: {{ result }}</h2>
+    {% endif %}
+</body>
+</html>
