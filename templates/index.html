@@ -1,17 +1,41 @@
-
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="id">
 <head>
-    <title>Prediksi Tumor Otak</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Klasifikasi Tumor Otak - AI Diagnosis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Upload Gambar MRI Otak</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*">
-        <input type="submit" value="Prediksi">
+  <header>
+    <h1>🧠 Klasifikasi Tumor Otak</h1>
+    <p>Upload gambar MRI otak untuk mengetahui apakah terdapat tumor atau tidak menggunakan AI</p>
+  </header>
+
+  <section class="features">
+    <div class="card">🎯<h3>Presisi Tinggi</h3><p>Didukung oleh model AI berbasis fitur tekstur citra</p></div>
+    <div class="card">🔒<h3>Aman</h3><p>Gambar hanya diproses lokal dan tidak disimpan</p></div>
+    <div class="card">⚡<h3>Cepat & Mudah</h3><p>Hanya satu klik untuk hasil prediksi</p></div>
+  </section>
+
+  <main>
+    <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/predict">
+      <label for="imageUpload" id="dropArea">
+        🖼️ Drag & drop gambar MRI otak di sini <br>atau klik untuk memilih file
+        <input type="file" name="image" id="imageUpload" accept="image/*" required hidden>
+
+      </label>
+      <button type="submit">🔍 Prediksi</button>
     </form>
-    {% if result %}
+
+    <div id="resultArea">
+      {% if result %}
         <h2>Hasil Prediksi: {{ result }}</h2>
-    {% endif %}
+        <img src="{{ image_url }}" alt="Gambar Diupload" class="preview">
+      {% endif %}
+    </div>
+  </main>
+
+   {#script src="{{ url_for('static', filename='script.js') }}"></script>#}
 </body>
 </html>
