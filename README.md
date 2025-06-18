@@ -16,21 +16,7 @@ Aplikasi web sederhana berbasis Flask untuk memprediksi apakah citra MRI otak me
 
 ---
 
-## 🗂 Struktur Direktori
 
-tumor_prediksi_web/
-├── app.py
-├── modelNEW.pkl # Model Random Forest hasil training (harus ditambahkan manual)
-├── templates/
-│ ├── index.html # Halaman upload
-│ └── result.html # Halaman hasil prediksi
-├── static/
-│ ├── style.css # Styling tampilan web
-│ ├── script.js # Drag-and-drop logic
-│ └── uploads/ # Folder untuk menyimpan gambar yang diunggah
-
-
----
 
 ## 🚀 Cara Menjalankan
 
@@ -40,3 +26,8 @@ tumor_prediksi_web/
 
 ```bash
 pip install flask numpy pillow scikit-image scikit-learn opencv-python
+```
+
+### 3. Lalu setelahnya clone dan jalankan dengan command ini:
+```bash
+py app.py
